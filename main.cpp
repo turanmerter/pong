@@ -1,3 +1,13 @@
+
+//
+//  main.cpp
+//  Bilgisayar Proje II - Real-Time Computer Graphics
+//  Project #II - Pong game
+//
+//  Merter TURAN - turanmerter@gmail.com
+//  040080204
+//
+
 #include <iostream>
 #include <cmath>
 #include <GL/glew.h>
@@ -31,7 +41,7 @@ Scene* scene;
 
 float directionX = 1;
 float directionY = 0.5;
-float speed = 0.001;
+float speed = 0.0001;
 
 static void Draw(void)
 {
@@ -51,16 +61,16 @@ static void Key(unsigned char key, int x, int y)
 		case 27: // ESC
 			exit(0);
             break;
-        case 'q': // pad 1 up
+        case 'a': // ESC
 			pad1->translate(0, -2, 0);
             break;
-        case 'a': // pad 1 down
+        case 'q': // ESC
 			pad1->translate(0, 2, 0);
             break;
-        case 'w': // pad 2 up
+        case 's': // ESC
 			pad2->translate(0, -2, 0);
             break;
-        case 's': // pad 2 down
+        case 'w': // ESC
 			pad2->translate(0, 2, 0);
             break;
 	}
@@ -102,27 +112,27 @@ void IdleFunction(void)
     float x = ball->getPosition().x;
     float y = ball->getPosition().y;
     
-     if( y > 100.0 )
+     if( y > 0.6 )
     {
         directionY *= -1;
     }
-    if( y < -100.0 )
+    if( y < -0.6 )
     {
         directionY *= -1;
     }
-    if( x > 100.0  &&  abs( pad2->getPosition().y - ball->getPosition().y) < 7 )
-    { 
+    if( x > 1.0  &&  abs( pad2->getPosition().y - ball->getPosition().y) < 0.2 )
+    {
         directionX *= -1;
     }
-    else if (x > 100.0)
+    else if (x > 1.0)
 	{
         exit(0);
     }
-    if( x < -100.0 && abs( pad1->getPosition().y - ball->getPosition().y) < 7 ) 
+    if( x < -1.0 && abs( pad1->getPosition().y - ball->getPosition().y) < 0.2 ) 
     {
         directionX *= -1;
     }
-    else if (x < -100.0)
+    else if (x < -1.0)
 	{
         exit(0);
     }
@@ -134,11 +144,11 @@ void IdleFunction(void)
 void setupScene(){
     scene = new Scene();
     
-    pad1 = new ScreenSpaceShaderNode("I:/Ders7/Ders7/Ders7/capsule.obj");
+    pad1 = new ScreenSpaceShaderNode("capsule.obj");
     
-    pad2 = new ColorFillNode("I:/Ders7/Ders7/Ders7/capsule.obj");
+    pad2 = new ColorFillNode("capsule.obj");
     
-    ball = new ColorFillNode("I:/Ders7/Ders7/Ders7/bunny.obj");
+    ball = new ColorFillNode("bunny.obj");
     
     pad1->scale(0.01,0.01,0.01);
     pad2->scale(0.01,0.01,0.01);
@@ -164,6 +174,7 @@ int main (int argc, char ** argv)
     GLenum type;
     
 	glutInit(&argc, argv);
+	
 	glutInitWindowSize(CurrentWidth,CurrentHeight);
 	type = GLUT_RGB;
 	type |= GLUT_DOUBLE;
@@ -171,15 +182,7 @@ int main (int argc, char ** argv)
     type |= GLUT_MULTISAMPLE;
 	glutInitDisplayMode(type);
 	glutCreateWindow("");
-
-	GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-	  /* Problem: glewInit failed, something is seriously wrong. */
-	  fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-	}
-	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
-    
+    glewInit();
     glClearColor(0.0, 1.0, 0.0, 1.0);
     // Z-Buffer i aciyoruz
     glEnable(GL_DEPTH_TEST);
